@@ -1,7 +1,7 @@
 # Deployment Information
 
 ## Public URL
-Pending final deploy on Render (Blueprint).
+https://ai-agent-production-nn44.onrender.com
 
 ## Platform
 Render (primary), Railway (alternative config available).
@@ -10,22 +10,22 @@ Render (primary), Railway (alternative config available).
 - [x] `06-lab-complete/render.yaml` available
 - [x] Render env vars aligned with app config (`MONTHLY_BUDGET_USD`, `RATE_LIMIT_PER_MINUTE`)
 - [x] Containerized app verified locally (`my-agent`, `GET /health` returns 200)
-- [ ] Public service URL generated from cloud platform
+- [x] Public service URL generated from cloud platform
 
 ## Test Commands
 
 ### Health Check
 ```bash
-curl https://<your-render-domain>/health
+curl https://ai-agent-production-nn44.onrender.com/health
 # Expected: {"status":"ok", ...}
 ```
 
 ### API Test (with authentication)
 ```bash
-curl -X POST https://<your-render-domain>/auth/token \
+curl -X POST https://ai-agent-production-nn44.onrender.com/auth/token \
   -H "X-API-Key: <AGENT_API_KEY>"
 
-curl -X POST https://<your-render-domain>/ask \
+curl -X POST https://ai-agent-production-nn44.onrender.com/ask \
   -H "Authorization: Bearer <ACCESS_TOKEN>" \
   -H "Content-Type: application/json" \
   -d '{"question":"Hello"}'
@@ -53,5 +53,5 @@ curl -X POST https://<your-render-domain>/ask \
 
 ## Screenshots
 - [ ] Deployment dashboard
-- [ ] Service running
+- [x] Service running (`sucessful-deploy-render.png`)
 - [ ] Health/API test results

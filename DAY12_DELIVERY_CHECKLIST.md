@@ -99,9 +99,14 @@ Ghi chú từ ảnh:
 - Platform selected: **Render** (primary), **Railway** (backup config)
 - Deployment config prepared:
   - `06-lab-complete/render.yaml`
-- URL: **Pending final Render deploy (Blueprint)**
-- Screenshot: **Pending** (cần chụp dashboard + service running sau khi có URL)
+- URL: https://ai-agent-production-nn44.onrender.com
+- Screenshots:
+  - `sucessful-deploy-render.png` (service endpoint running)
+  - `successful-deployment-render2.png` (Render dashboard/log deploy live)
 - Documentation file: ✅ `DEPLOYMENT.md` created in project root
+
+![Render service endpoint live](sucessful-deploy-render.png)
+![Render dashboard and live logs](successful-deployment-render2.png)
 
 ## Part 4: API Security
 
@@ -128,7 +133,8 @@ Ghi chú từ ảnh:
 
 ### Status note
 - `06-lab-complete/check_production_ready.py`: **20/20 checks passed (100%)**
-- Còn thiếu để nộp hoàn chỉnh: `DEPLOYMENT.md`, public URL, screenshots deploy.
+- Deploy Render: ✅ thành công, service public đã truy cập được.
+- Còn thiếu để nộp hoàn chỉnh: bổ sung đầy đủ ảnh dashboard + test output vào thư mục `screenshots/` (nếu giảng viên yêu cầu đúng tên file).
 
 ---
 
@@ -176,22 +182,21 @@ Create a file `DEPLOYMENT.md` with your deployed service information:
 # Deployment Information
 
 ## Public URL
-https://your-agent.railway.app
+https://ai-agent-production-nn44.onrender.com
 
-## Platform
-Railway / Render / Cloud Run
-
+## Platform: Render
+ 
 ## Test Commands
 
 ### Health Check
 ```bash
-curl https://your-agent.railway.app/health
+curl https://ai-agent-production-nn44.onrender.com/health
 # Expected: {"status": "ok"}
 ```
 
 ### API Test (with authentication)
 ```bash
-curl -X POST https://your-agent.railway.app/ask \
+curl -X POST https://ai-agent-production-nn44.onrender.com/ask \
   -H "X-API-Key: YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{"user_id": "test", "question": "Hello"}'
@@ -204,9 +209,13 @@ curl -X POST https://your-agent.railway.app/ask \
 - LOG_LEVEL
 
 ## Screenshots
-- [Deployment dashboard](screenshots/dashboard.png)
-- [Service running](screenshots/running.png)
-- [Test results](screenshots/test.png)
+- [Service running](sucessful-deploy-render.png)
+![Service running](sucessful-deploy-render.png)
+
+- [Deployment dashboard](successful-deployment-render2.png)
+![Deployment dashboard](successful-deployment-render2.png)
+- [Test results](screenshots/test.png) *(pending add)*
+
 ```
 
 ##  Pre-Submission Checklist
@@ -214,12 +223,12 @@ curl -X POST https://your-agent.railway.app/ask \
 - [ ] Repository is public (or instructor has access)
 - [x] `MISSION_ANSWERS.md` created and filled for Part 1 + Part 2
 - [ ] `MISSION_ANSWERS.md` completed with all exercises (Part 3-5 still need final write-up)
-- [ ] `DEPLOYMENT.md` has working public URL
+- [x] `DEPLOYMENT.md` has working public URL
 - [x] All source code in `app/` directory (`06-lab-complete/app/`)
 - [x] `README.md` has setup instructions
 - [x] No `.env` file committed (using `.env.example`)
 - [x] No hardcoded secrets in `06-lab-complete/app/` production code
-- [ ] Public URL is accessible and working
+- [x] Public URL is accessible and working
 - [ ] Screenshots included in `screenshots/` folder
 - [x] Repository has commit history
 
@@ -231,20 +240,20 @@ Before submitting, verify your deployment:
 
 ```bash
 # 1. Health check
-curl https://your-app.railway.app/health
+curl https://ai-agent-production-nn44.onrender.com/health
 
 # 2. Authentication required
-curl https://your-app.railway.app/ask
+curl https://ai-agent-production-nn44.onrender.com/ask
 # Should return 401
 
 # 3. With API key works
-curl -H "X-API-Key: YOUR_KEY" https://your-app.railway.app/ask \
+curl -H "X-API-Key: YOUR_KEY" https://ai-agent-production-nn44.onrender.com/ask \
   -X POST -d '{"user_id":"test","question":"Hello"}'
 # Should return 200
 
 # 4. Rate limiting
 for i in {1..15}; do 
-  curl -H "X-API-Key: YOUR_KEY" https://your-app.railway.app/ask \
+  curl -H "X-API-Key: YOUR_KEY" https://ai-agent-production-nn44.onrender.com/ask \
     -X POST -d '{"user_id":"test","question":"test"}'; 
 done
 # Should eventually return 429
@@ -257,7 +266,7 @@ done
 **Submit your GitHub repository URL:**
 
 ```
-https://github.com/<your-username>/day12-agent-deployment
+https://github.com/haubelerche/AI20K115-Luong-Thanh-Hau-Day-12
 ```
 
 **Deadline:** 17/4/2026
