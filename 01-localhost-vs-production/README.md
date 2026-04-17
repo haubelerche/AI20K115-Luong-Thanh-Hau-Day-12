@@ -13,12 +13,13 @@
 develop/
 ├── app.py          # ❌ Anti-patterns: hardcode secrets, no config, no health check
 ├── .env.example
-└── requirements.txt
+├── requirements.txt
+└── utils/mock_llm.py
 ```
 
 ### Chạy thử
 ```bash
-cd basic
+cd develop
 pip install -r requirements.txt
 python app.py
 # Truy cập: http://localhost:8000
@@ -40,16 +41,29 @@ production/
 ├── app.py          # ✅ Clean: config from env, health check, graceful shutdown
 ├── config.py       # ✅ Centralized config management
 ├── .env.example    # ✅ Template — không commit .env thật
-└── requirements.txt
+├── requirements.txt
+└── utils/mock_llm.py
 ```
 
 ### Chạy thử
 ```bash
-cd advanced
+cd production
 pip install -r requirements.txt
-cp .env.example .env
+copy .env.example .env
 # Sửa .env nếu cần
 python app.py
+```
+
+### Test nhanh endpoint
+PowerShell:
+```powershell
+Invoke-RestMethod -Uri "http://localhost:8000/health" -Method Get
+
+$body = @{ question = "Hello" } | ConvertTo-Json
+Invoke-RestMethod -Uri "http://localhost:8000/ask" `
+  -Method Post `
+  -ContentType "application/json" `
+  -Body $body
 ```
 
 ### So sánh với Basic:

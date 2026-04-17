@@ -14,9 +14,8 @@ app = FastAPI(title="My Agent")
 
 # ❌ Vấn đề 1: API key hardcode trong code
 # Nếu push lên GitHub → key bị lộ ngay lập tức
-OPENAI_API_KEY = "sk-hardcoded-fake-key-never-do-this"
+OPENAI_API_KEY = "sk-hardcoded-demo-key"
 DATABASE_URL = "postgresql://admin:password123@localhost:5432/mydb"
-
 # ❌ Vấn đề 2: Không có config management
 DEBUG = True
 MAX_TOKENS = 500

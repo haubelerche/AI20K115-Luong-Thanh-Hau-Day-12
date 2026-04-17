@@ -11,7 +11,9 @@ RUN apt-get update && apt-get install -y gcc libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir --user -r requirements.txt
+RUN python -m venv /opt/venv
+RUN /opt/venv/bin/pip install --no-cache-dir --upgrade pip \
+    && /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
 
 
 # Stage 2: Runtime
@@ -22,8 +24,8 @@ RUN groupadd -r agent && useradd -r -g agent -d /app agent
 
 WORKDIR /app
 
-# Copy packages từ builder
-COPY --from=builder /root/.local /home/agent/.local
+# Copy Python environment từ builder
+COPY --from=builder /opt/venv /opt/venv
 
 # Copy application
 COPY app/ ./app/
@@ -33,7 +35,7 @@ RUN chown -R agent:agent /app
 
 USER agent
 
-ENV PATH=/home/agent/.local/bin:$PATH
+ENV PATH=/opt/venv/bin:$PATH
 ENV PYTHONPATH=/app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
