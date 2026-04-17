@@ -13,7 +13,7 @@ def check_budget(user_id: str = Depends(verify_bearer_token)) -> None:
     Enforce per-user monthly budget in USD.
     """
     estimated_cost = 0.01  # Flat estimate for this lab.
-    month_key = datetime.utcnow().strftime("%Y-%m")
+    month_key = datetime.now().strftime("%Y-%m")
     key = f"budget:{user_id}:{month_key}"
 
     current_spend = float(r.get(key) or 0.0)

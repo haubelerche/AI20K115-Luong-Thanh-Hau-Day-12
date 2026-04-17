@@ -1,9 +1,11 @@
 import json
 import logging
+import os
 import signal
 import time
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
+from typing import Optional
 
 import redis
 import uvicorn
@@ -15,7 +17,7 @@ from app.auth import create_access_token, verify_api_key, verify_bearer_token
 from app.config import settings
 from app.cost_guard import check_budget
 from app.rate_limiter import check_rate_limit
-from utils.mock_llm import ask as llm_ask
+from utils.mock_llm import ask as mock_llm_ask
 
 logging.basicConfig(
     level=logging.DEBUG if settings.debug else logging.INFO,
@@ -26,6 +28,47 @@ logger = logging.getLogger(__name__)
 redis_client = redis.from_url(settings.redis_url, decode_responses=True)
 start_time = time.time()
 is_ready = False
+_openai_client: Optional[object] = None
+
+
+def get_openai_client() -> Optional[object]:
+    """Return OpenAI client if package + API key are available."""
+    global _openai_client
+    if _openai_client is not None:
+        return _openai_client
+
+    api_key = os.getenv("OPENAI_API_KEY", "").strip()
+    if not api_key:
+        return None
+
+    try:
+        from openai import OpenAI  # type: ignore
+    except Exception:
+        logger.warning("OPENAI_API_KEY is set but `openai` package is missing; using mock LLM")
+        return None
+
+    _openai_client = OpenAI(api_key=api_key)
+    return _openai_client
+
+
+def llm_ask(question: str) -> str:
+    """Use OpenAI when available; fallback to mock LLM."""
+    client = get_openai_client()
+    if client is None:
+        return mock_llm_ask(question)
+
+    model = settings.llm_model if settings.llm_model != "mock-llm" else "gpt-4o-mini"
+    try:
+        resp = client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": question}],
+            temperature=0.2,
+        )
+        answer = resp.choices[0].message.content if resp.choices else ""
+        return answer or "I could not generate a response."
+    except Exception as exc:  # pragma: no cover - fallback guard
+        logger.warning("OpenAI request failed (%s); fallback to mock LLM", exc)
+        return mock_llm_ask(question)
 
 
 class AskRequest(BaseModel):
