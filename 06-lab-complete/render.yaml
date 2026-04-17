@@ -2,6 +2,7 @@ services:
   - type: web
     name: ai-agent-production
     runtime: docker
+    dockerfilePath: ./06-lab-complete/Dockerfile
     region: singapore
     plan: starter
     healthCheckPath: /health
